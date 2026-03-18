@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import axios from 'axios';
 import {URL} from './config.js'
 
@@ -7,18 +7,32 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [editTodo, setEditTodo] = useState(null);
   const [editedText, setEditedText] = useState('');
+
+  const getTodos = async () => {
+    try {
+      const res = await axios.get(`${URL}/todos`);
+      setTodos(res.data);
+    } catch(err) {
+      console.error(err.message);
+    }
+  }
+
+  useEffect(() => {
+    getTodos();
+  }, [])
   
   const onSubmitForm = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target)
     const dataObj = Object.fromEntries(formData.entries());
-    
+  
     try {
       await axios.post(`${URL}/todos`, {
         ...dataObj,
         completed: false,
       });
-
+      e.target.reset();
+      getTodos();
     } catch(err) {
       console.error(err.message);
     }
@@ -43,6 +57,23 @@ function App() {
             Add task
           </button>
         </form>
+
+        <div>
+          {todos.length ===0 ? (
+            <p className='text-gray-600'>No tasks available. Add a new task!</p>
+          ) : (
+            <div>
+              {todos.map((todo, index) => {
+                return (
+                  <div key={index} >
+                    <span>{todo.description}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
 
