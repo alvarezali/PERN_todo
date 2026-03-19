@@ -1,6 +1,7 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect} from 'react';
 import axios from 'axios';
-import {URL} from './config.js'
+import {URL} from './config.js';
+import {MdOutlineDone} from 'react-icons/md';
 
 function App() {
 
@@ -62,10 +63,14 @@ function App() {
           {todos.length ===0 ? (
             <p className='text-gray-600'>No tasks available. Add a new task!</p>
           ) : (
-            <div>
+            <div className='flex flex-col gap-y-4'>
               {todos.map((todo, index) => {
                 return (
-                  <div key={index} >
+                  
+                  <div key={todo.todo_id} className='flex items-center gap-x-4' >
+                    <button className={`h-6 w-6 border-2 rounded-full flex items-center justify-center ${todo.completed ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-blue-400 cursor-pointer' }`}>
+                      {todo.completed && <MdOutlineDone/>}
+                    </button>
                     <span>{todo.description}</span>
                   </div>
                 )
