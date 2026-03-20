@@ -87,10 +87,10 @@ function App() {
                           required
                         />
                         <div className='flex gap-2'>
-                          <button type='submit' className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-500 duration-200 cursor-pointer'>
+                          <button type='submit' className='p-2 bg-green-600 text-white rounded-lg hover:bg-green-500 duration-200 cursor-pointer'>
                             <MdOutlineDone/> 
                           </button>
-                          <button onClick={() => setEditTodo(null)} type='button' className='px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 duration-200 cursor-pointer'>
+                          <button onClick={() => setEditTodo(null)} type='button' className='p-2 bg-red-600 text-white rounded-lg hover:bg-red-500 duration-200 cursor-pointer'>
                             <IoClose /> 
                           </button>
                         </div>
@@ -106,16 +106,15 @@ function App() {
                         </div>
                         <div className='flex gap-x-2'>
                           <button 
+                            className='p-2 text-gray-500 hover:text-green-400 duration-200 rounded-lg cursor-pointer'
                             onClick={() => {
                               setEditTodo(todo.todo_id);
                               setEditedText(todo.description);
                               setTimeout(() => {
                                 document.getElementById(todo.todo_id).focus();
                               }, 0);
-                              
                             }} 
-                            className='p-2 text-gray-500 hover:text-green-400 duration-200 rounded-lg cursor-pointer'
-                            >
+                          >
                             <MdModeEditOutline />
                           </button>
                           <button className='p-2 text-gray-500 hover:text-red-600 duration-200 rounded-lg cursor-pointer'>
