@@ -43,6 +43,43 @@ function App() {
 
   const submitChanges = async (e) => {
     e.preventDefault();
+    const formData = new FormData(e.target);
+    const dataObj = Object.fromEntries(formData.entries());
+
+    try {
+      await axios.put(`${URL}/todos/${editTodo}`,{
+        description: dataObj.description,
+      });
+      setEditedText('');
+      setEditTodo(null);
+      e.target.reset();
+      getTodos();
+    } catch(err) {
+      console.error(err.message);
+    }
+  }
+
+  const submitDelete = async (id) => {
+    try {
+      await axios.delete(`${URL}/todos/${id}`);
+      setEditTodo(null);
+      setTodos(todos => todos.filter(todo => todo.todo_id !== id));
+    } catch(err) {
+      console.error(err.message);
+    }
+  }
+
+  const submitCompleted = async (id, description, completed) => {
+    try {
+      //console.log(id, description, completed);
+      await axios.put(`${URL}/todos/${id}`, {
+        description: description,
+        completed: !completed,
+      });
+      setTodos(todos => todos.map(todo => (todo.todo_id === id ? {...todo, completed: !todo.completed} : todo)));
+    } catch(err) {
+      console.log(err.message);
+    }
   }
 
   return (
@@ -50,7 +87,7 @@ function App() {
     <div className="min-h-screen bg-gray-800 flex justify-center items-center p-4" >
       <div className="bg-gray-300 rounded-xl shadow-xl w-full max-w-lg p-8">
         
-        <h1 className="text-4xl font-bold text-gray-700 mb-8">PERN TODO APP</h1>
+        <h1 className="text-4xl text-center font-bold text-gray-700 mb-8">PERN TODO APP</h1>
         
         <form onSubmit={submitForm} className='flex items-center gap-2 shadow-sm border p-2 rounded-lg mb-6'>
           <input 
@@ -99,7 +136,7 @@ function App() {
                     (
                       <div className='flex justify-between'>
                         <div className='flex items-center gap-x-4' >
-                          <button className={`h-6 w-6 border-2 rounded-full flex items-center justify-center ${todo.completed ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-blue-400' }`}>
+                          <button onClick={() => submitCompleted(todo.todo_id, todo.description, todo.completed)} className={`h-6 w-6 border-2 rounded-full flex items-center justify-center cursor-pointer ${todo.completed ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-blue-400' }`}>
                             {todo.completed && <MdOutlineDone size={16} />}
                           </button>
                           <span>{todo.description}</span>
@@ -117,7 +154,7 @@ function App() {
                           >
                             <MdModeEditOutline />
                           </button>
-                          <button className='p-2 text-gray-500 hover:text-red-600 duration-200 rounded-lg cursor-pointer'>
+                          <button onClick={() => submitDelete(todo.todo_id)} className='p-2 text-gray-500 hover:text-red-600 duration-200 rounded-lg cursor-pointer'>
                             <FaTrash />
                           </button>
                         </div>
