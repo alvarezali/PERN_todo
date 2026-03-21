@@ -71,7 +71,6 @@ function App() {
 
   const submitCompleted = async (id, description, completed) => {
     try {
-      //console.log(id, description, completed);
       await axios.put(`${URL}/todos/${id}`, {
         description: description,
         completed: !completed,
@@ -85,7 +84,7 @@ function App() {
   return (
 
     <div className="min-h-screen bg-gray-800 flex justify-center items-center p-4" >
-      <div className="bg-gray-300 rounded-xl shadow-xl w-full max-w-lg p-8">
+      <div className="fixed top-10 bg-gray-300 rounded-xl shadow-xl w-full max-w-lg p-8">
         
         <h1 className="text-4xl text-center font-bold text-gray-700 mb-8">PERN TODO APP</h1>
         
@@ -135,8 +134,10 @@ function App() {
                     ) : 
                     (
                       <div className='flex justify-between'>
-                        <div className='flex items-center gap-x-4' >
-                          <button onClick={() => submitCompleted(todo.todo_id, todo.description, todo.completed)} className={`h-6 w-6 border-2 rounded-full flex items-center justify-center cursor-pointer ${todo.completed ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-blue-400' }`}>
+                        <div className='flex items-center gap-x-4 overflow-hidden' >
+                          <button 
+                            onClick={() => submitCompleted(todo.todo_id, todo.description, todo.completed)} 
+                            className={`flex-shrink-0 h-6 w-6 border-2 rounded-full flex items-center justify-center cursor-pointer ${todo.completed ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-blue-400' }`}>
                             {todo.completed && <MdOutlineDone size={16} />}
                           </button>
                           <span>{todo.description}</span>
