@@ -5,8 +5,14 @@ const router = Router();
 
 //Create a new todo
 router.post('/', async (req, res) => {
+
     try {
         const {description, completed} = req.body;
+
+        if(!description) {
+            return res.status(400).json({error: 'Description is required.'});
+        }
+
         const newTodo = await pool.query(
             'INSERT INTO todo (description, completed) VALUES ($1, $2) RETURNING *',
             [description, completed || false]);
@@ -34,10 +40,20 @@ router.put('/:id', async (req, res) => {
     try {
         const {id} = req.params;
         const {description, completed} = req.body;
+
+        if(!description) {
+            return res.status(400).json({error: 'Description is required.'});
+        }
+
         const updatedTodo = await pool.query(
         "UPDATE todo SET description = $1, completed = $2 WHERE todo_id = $3 RETURNING *",
         [description, completed || false, id]
         );
+
+        if(updatedTodo.rows.length === 0) {
+            return res.status(400).json({error: 'Todo not found.'})
+        }
+
         res.json({
             message: 'Todo was updated',
             todo: updatedTodo.rows[0]
@@ -52,7 +68,12 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const {id} = req.params;
-        await pool.query('DELETE FROM todo WHERE todo_id = $1', [id]);
+        const deletedTodo = await pool.query('DELETE FROM todo WHERE todo_id = $1 RETURNING *', [id]);
+        
+        if(deletedTodo.rows.length ===0) {
+            res.status(404).json({error: 'Todo not found.'});
+        }
+        
         res.json(`Todo id number ${id} was deleted`);
 
     } catch(err) {
